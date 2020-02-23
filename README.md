@@ -2,7 +2,10 @@
 
 codename:《文言陰符》
 
-![](cover.svg)
+
+<table><tr>
+<td><img src="cover.svg" height="700"></td><td><img src="cover.png" height="700"></td>
+</tr></table>
 
 上篇
 
