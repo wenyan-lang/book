@@ -7,7 +7,7 @@ codename:《文言陰符》
 <td><img src="cover.svg" height="700"></td><td><img src="cover.png" height="700"></td>
 </tr></table>
 
-上篇
+
 
 - 明義第一
 - 變數第二
@@ -21,7 +21,4 @@ codename:《文言陰符》
 - 格物第十
 - 克禍第十一
 - 圖畫第十二
-- 丹道第十三
-- 宏略第十四
-
-下篇
+- 宏略第十三
