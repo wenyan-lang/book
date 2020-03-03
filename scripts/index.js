@@ -28,8 +28,8 @@ COLORS = {
   not: BLACK,
   operand: BLACK,
   bool: BLACK,
-  data: BLACK,
-  iden: "#345",
+  data: RED,
+  iden: "#357",
   quot: BLACK,
   num: "#872",
   import: BLACK,
@@ -37,6 +37,11 @@ COLORS = {
   macro: RED,
 };
 `;
+
+var ICONS = {//for iconify failures
+	OPEN_IN_NEW:`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="vertical-align: -0.125em;-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" class="iconify" data-icon="mdi:open-in-new"><path d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" fill="currentColor"></path></svg>`
+}
+
 eval(constants)
 const fs = require('fs');
 const semantic = require('./semantic')
@@ -48,9 +53,10 @@ fnames.sort();
 var ftexts = fnames.map(x=>fs.readFileSync("../"+x).toString())
 
 for (var i = 0; i < ftexts.length; i++){
-	ftexts[i] = ftexts[i].replace(/  /g,"　").replace(/\t/g,"　　")//U+3000 ideograph sapce
+	ftexts[i] = ftexts[i].replace(/  /g,"　").replace(/\t/g,"　")//U+3000 ideograph sapce
 }
-var txt = ftexts.join("\n")
+var txt = ftexts.join("\n");
+var BLOCKS = txt.split("```");
 var bl = txt.split("```");
 var sem = [];
 for (var i = 0; i < bl.length; i++){
@@ -58,6 +64,8 @@ for (var i = 0; i < bl.length; i++){
 		bl[i] = bl[i].replace(/`(.+?)`/g,"「$1」")
 		bl[i] = bl[i].replace(/\n+/g,"$").replace(/\n/g,'').replace(/\$/g,'\n')
 
+	}else{
+		BLOCKS[i] = BLOCKS[i].replace("為是千遍","為是十遍");
 	}
 	bl[i] = bl[i].replace(/「「「「/g,"『 『").replace(/「「「/g,"『 「").replace(/「「/g,QL2)
 				 .replace(/」」」」/g,"』 』").replace(/」」」/g,"」 』").replace(/」」/g,QR2)
@@ -151,15 +159,15 @@ function typeset(T,F,l,r,w,h){
 			var oy = h*T[i].y;
 			ymax = Math.max(oy,ymax);
 			if (t == QL1){
-				O += `<div class="ql" style="top:${oy}px; left:${ox+h/2}px; width:${h/2}px; height:${h/2}px;"></div>`
+				O += `<div class="ql" style="top:${oy}px; left:${ox+h/2}px; width:${h/2}px; height:${h/2}px;">「</div>`
 			}else if (t == QL2){
-				O += `<div class="ql" style="top:${oy}px; left:${ox+h/2}px; width:${h/2}px; height:${h/2}px;"></div>`
-				O += `<div class="ql" style="top:${oy-d}px; left:${ox+h/2}px; width:${h/2+d}px; height:${h/2+d}px;"></div>`
+				O += `<div class="ql" style="top:${oy}px; left:${ox+h/2}px; width:${h/2}px; height:${h/2}px;">「</div>`
+				O += `<div class="ql" style="top:${oy-d}px; left:${ox+h/2}px; width:${h/2+d}px; height:${h/2+d}px;">「</div>`
 			}else if (t == QR1){
-				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox}px; width:${h/2}px; height:${h/2}px;"></div>`
+				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox}px; width:${h/2}px; height:${h/2}px;">」</div>`
 			}else if (t == QR2){
-				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox}px; width:${h/2}px; height:${h/2}px;"></div>`
-				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox-d}px; width:${h/2+d}px; height:${h/2+d}px;"></div>`
+				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox}px; width:${h/2}px; height:${h/2}px;">」</div>`
+				O += `<div class="qr" style="top:${oy+h/2}px; left:${ox-d}px; width:${h/2+d}px; height:${h/2+d}px;">」</div>`
 			}else if (t == PRD){
 				O += `<div class="punc" style="top:${oy+h/2}px; left:${ox+h/2}px; font-size:${h*f*ff}px; ${(cstr.length)?cstr:"color:"+RED};">${t}</div>`
 			}else{
@@ -169,15 +177,24 @@ function typeset(T,F,l,r,w,h){
 		}
 	}
 	for (var i = 0; i < F.length; i++){
-		// if (l < F[i][0] && F[i][1] < r){
+		if (l < F[i][0]*w && F[i][1]*w < r){
 			if (i % 2 == 1){
-				O += `<div class="box" style="top:${0}px; left:${F[i][1]*w-l}px; width:${(F[i][0]-F[i][1])*w}px; height:${ymax+h}px;"></div>`
+				var run = (`
+				(function (){
+					var _i = ${i};
+					document.getElementById('editor').contentWindow.postMessage({action:'code',value:BLOCKS[_i].slice(1)},'*')
+					document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')
+				})()
+				`).replace(/\n/g,';')
+				O += `<div class="box" style="top:${-2}px; left:${F[i][1]*w-l-10}px; width:${(F[i][0]-F[i][1])*w+20}px; height:${ymax+h+4}px; transform:;"></div>`
+				O += `<div class="popbtn" onclick="${run}" style="top:${Math.round(ymax+h-18)}px; left:${Math.round(F[i][1]*w-l-10)}px; width:${20}px; height:${20}px;">${ICONS.OPEN_IN_NEW}</div>`
 			}else{
 				for (var j = F[i][1]; j < F[i][0]; j++){
-					O += `<div class="rail" style="top:${0}px; left:${j*w-l}px; width:${w}px; height:${ymax+h}px;"></div>`
+					O += `<div class="rail${(j==F[i][0]-1)?'f':''}" style="top:${-2}px; left:${j*w-l}px; width:${w}px; height:${ymax+h+4}px;"></div>`
+
 				}
 			}
-		// }
+		}
 	}
 	return O;
 }
@@ -225,6 +242,7 @@ function main(){
 
 	var l = -window.innerWidth;
 	var r = 0;
+	var O;
 	function calcSlider(){
 		var ww = window.innerWidth*(r-l)/(-M.T[M.T.length-1].x*w)
 		S.style.width = ww+"px";
@@ -235,7 +253,7 @@ function main(){
 		l = ((window.innerWidth-S.offsetLeft)/window.innerWidth)*M.T[M.T.length-1].x*w;
 		r = ((window.innerWidth-(S.offsetLeft+S.offsetWidth))/window.innerWidth)*M.T[M.T.length-1].x*w;
 		
-		var O = typeset(M.T,M.F,l,r,w,h);
+		O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 	}
 
@@ -256,7 +274,6 @@ function main(){
 		r -= e.deltaY;
 
 		calcSlider();
-		console.log(S.style.right)
 		var O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 	})
@@ -267,6 +284,7 @@ var html = `
 <head>
 	<meta charset="UTF-8">
 </head>
+<script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
 <style id="style">
 @font-face {
 	font-family: QIJI;
@@ -274,7 +292,7 @@ var html = `
 	src: url('font.woff2') format('woff2'), url('font.ttf') format('truetype');
 }
 body{
-	background:#EEEEEE;
+	background:#EFEFEF;
 	overflow: hidden;
 	overscroll-behavior-x: none; /* disable THE worst feature on chrome */
 }
@@ -295,18 +313,30 @@ body{
 	border-top: 1.5px solid ${RED};
 	border-right: 1.5px solid ${RED};
 	transform: translate(-2px,5px);
+	color:rgba(0,0,0,0);
 }
 .qr{
 	position:absolute;
 	border-bottom: 1.5px solid ${RED};
 	border-left: 1.5px solid ${RED};
 	transform: translate(2px,4.5px);
+	color:rgba(0,0,0,0);
 }
 .box{
 	position:absolute;
 	border:1px solid black;
 	transform: translate(-4px,5px);
-	pointer-events:none;
+
+}
+.popbtn{
+	position:absolute;
+	transform: translate(0px,7px);
+	z-index:1000;
+	color:rgba(0,0,0,0.3);
+	cursor:pointer;
+}
+.popbtn:hover{
+	color:rgba(0,0,0,0.5);
 }
 .rail{
 	position:absolute;
@@ -315,6 +345,12 @@ body{
 	border-bottom:1px solid rgba(0,0,0,0.1);
 	pointer-events:none;
 	transform: translate(-4px,5px);
+}
+.railf{
+	position:absolute;
+	border:1px solid rgba(0,0,0,0.1);
+	pointer-events:none;
+	transform: translate(-4px,5px);	
 }
 #render{
 	position:absolute;
@@ -332,13 +368,21 @@ body{
 	height:20px;
 	top:calc(100% - 18px);
 }
+iframe{
+	border-radius: 2px;
+	border: 1px solid grey;
+	box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
 </style>
 <body>
 <div id="render"></div>
 <div id="slider"></div>
+<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
 </body>
 <script>
 ${constants}
+var BLOCKS = ${JSON.stringify(BLOCKS)};
+var ICONS = ${JSON.stringify(ICONS)}
 var bl = ${JSON.stringify(bl)};
 var sem = ${JSON.stringify(sem)}
 var matrix = ${matrix.toString()};
