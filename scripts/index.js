@@ -187,6 +187,7 @@ function typeset(T,F,l,r,w,h){
 					document.getElementById('editor-wrap').style.left='10px';
 					document.getElementById('editor').contentWindow.postMessage({action:'code',value:BLOCKS[_i].slice(1)},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')
+					document.getElementById('editor').contentWindow.postMessage({action:'set-view',value:50},'*')
 				})()
 				`).replace(/\n/g,';')
 				O += `<div class="box" style="top:${-2}px; left:${F[i][1]*w-l-10}px; width:${(F[i][0]-F[i][1])*w+20}px; height:${ymax+h+4}px; transform:;"></div>`
@@ -234,7 +235,7 @@ function main(){
 	    pos2 = pos4 - e.clientY;
 	    pos3 = e.clientX;
 	    pos4 = e.clientY;
-	    elmnt.style.right = (window.innerWidth-(elmnt.offsetLeft - pos1 + elmnt.offsetWidth)) + "px";
+	    elmnt.style.right = Math.min(Math.max(window.innerWidth-(elmnt.offsetLeft - pos1 + elmnt.offsetWidth),0),window.innerWidth-elmnt.offsetWidth) + "px";
 	    review();
 	  }
 	  function closeDragElement() {
@@ -246,16 +247,18 @@ function main(){
 	var l = -window.innerWidth;
 	var r = 0;
 	var O;
+	var ll = 0;
 	function calcSlider(){
-		var ww = window.innerWidth*(r-l)/(-M.T[M.T.length-1].x*w)
+		var ww = window.innerWidth*(r-l)/(-ll*w)
 		S.style.width = ww+"px";
-		S.style.right = (-window.innerWidth*r/(-M.T[M.T.length-1].x*w))+"px";
+		S.style.right = (-window.innerWidth*r/(-ll*w))+"px";
 	}
 
 	function review(){
-		l = ((window.innerWidth-S.offsetLeft)/window.innerWidth)*M.T[M.T.length-1].x*w;
-		r = ((window.innerWidth-(S.offsetLeft+S.offsetWidth))/window.innerWidth)*M.T[M.T.length-1].x*w;
-		
+		l = ((window.innerWidth-S.offsetLeft)/window.innerWidth)*ll*w;
+		r = ((window.innerWidth-(S.offsetLeft+S.offsetWidth))/window.innerWidth)*ll*w;
+		// r = Math.max(Math.min(0,r),M.T[M.T.length-1].x*w);
+		// l = r-window.innerWidth;
 		O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 	}
@@ -263,9 +266,11 @@ function main(){
 	function reflow(){
 		var n = Math.round((window.innerHeight-200-h-40)/h);
 		M = matrix(bl,sem,n);
+		ll = M.T[M.T.length-1].x-2;
 		calcSlider();
 		var O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
+		
 	}
 	reflow();
 	document.body.onresize = reflow;
@@ -275,6 +280,8 @@ function main(){
 		r += e.deltaX;
 		l -= e.deltaY;
 		r -= e.deltaY;
+		r = Math.max(Math.min(0,r),ll*w+window.innerWidth);
+		l = r-window.innerWidth;
 
 		calcSlider();
 		var O = typeset(M.T,M.F,l,r,w,h);
@@ -329,7 +336,7 @@ body{
 	position:absolute;
 	border:1px solid black;
 	transform: translate(-4px,5px);
-
+	pointer-events:none;
 }
 .popbtn{
 	position:absolute;
@@ -368,7 +375,6 @@ body{
 #slider{
 	position:absolute;
 	background: #BBB;
-	border: 1px solid #AEAEAE;
 	height:20px;
 	top:calc(100% - 18px);
 }
