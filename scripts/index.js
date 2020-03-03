@@ -40,6 +40,8 @@ COLORS = {
 
 var ICONS = {//for iconify failures
 	OPEN_IN_NEW:`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="vertical-align: -0.125em;-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" class="iconify" data-icon="mdi:open-in-new"><path d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" fill="currentColor"></path></svg>`
+	,CLOSE:`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" class="iconify" data-icon="mdi:close" data-inline="false"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z" fill="currentColor"></path></svg>`
+	,PLAY:`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" class="iconify" data-icon="mdi:play" data-inline="false"><path d="M8 5.14v14l11-7l-11-7z" fill="currentColor"></path></svg>`
 }
 
 eval(constants)
@@ -182,6 +184,7 @@ function typeset(T,F,l,r,w,h){
 				var run = (`
 				(function (){
 					var _i = ${i};
+					document.getElementById('editor-wrap').style.left='10px';
 					document.getElementById('editor').contentWindow.postMessage({action:'code',value:BLOCKS[_i].slice(1)},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')
 				})()
@@ -352,6 +355,7 @@ body{
 	pointer-events:none;
 	transform: translate(-4px,5px);	
 }
+
 #render{
 	position:absolute;
 	top:180px;
@@ -368,16 +372,52 @@ body{
 	height:20px;
 	top:calc(100% - 18px);
 }
-iframe{
+#editor-wrap{
+	position:absolute;
+	width: 320px;
+	height: 160px;
+	top: 10px;
+	z-index: 20000;
 	border-radius: 2px;
 	border: 1px solid grey;
 	box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+#editor{
+	width:320px;
+	height:100%;
+}
+.editor-btn{
+	position:absolute;
+	left:100%;
+	background: rgba(255,255,255,0.5);
+	border: 1px solid grey;
+	border-radius: 2px;
+	width: 20px;
+	height: 18px;
+	transform: translate(5px, 0px);
+	text-align:center;
+	cursor: pointer;
+	padding-top:2px;
+	color:rgba(0,0,0,0.6);
+}
+.editor-btn:hover{
+	color:rgba(0,0,0,1);
+}
+#editor-close{
+	top:0px;
+}
+#editor-run{
+	top:25px;
 }
 </style>
 <body>
 <div id="render"></div>
 <div id="slider"></div>
-<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
+<div id="editor-wrap" style="left:-1000px;">
+	<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
+	<div class="editor-btn" id="editor-close" onclick="document.getElementById('editor-wrap').style.left='-10000px'">${ICONS.CLOSE}</div>
+	<div class="editor-btn" id="editor-run" onclick="document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')">${ICONS.PLAY}</div>
+</div>
 </body>
 <script>
 ${constants}
