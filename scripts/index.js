@@ -7,6 +7,8 @@ QR1 = "」"
 PRD = "。"
 RED = "#BB705AEE";
 BLACK = "#2B2B2B";
+BLUE = "#357";
+
 COLORS = {
   ctrl: RED,
   lop: BLACK,
@@ -29,7 +31,7 @@ COLORS = {
   operand: BLACK,
   bool: BLACK,
   data: RED,
-  iden: "#357",
+  iden: BLUE,
   quot: BLACK,
   num: "#872",
   import: BLACK,
@@ -57,7 +59,15 @@ for (var i = 0; i < ftexts.length; i++){
 	ftexts[i] = ftexts[i].replace(/  /g,"　").replace(/\t/g,"　")//U+3000 ideograph sapce
 }
 var txt = ftexts.join("\n");
-txt = "文言陰符內篇　　　　黃令東\n　　"+fnames.map((x,i)=>x.split(" ")[1].split(".")[0]+(i%2==1?"\n　":(i>=10?"":"　"))).join("　")+"\n"+txt;
+txt = "文言陰符內篇\n　　"+fnames.map((x,i)=>x.split(" ")[1].split(".")[0]+(i%2==1?"\n　":(i>=10?"":"　"))).join("　")+"\n"+txt;
+
+ICONS.CHAPTERS = []
+for (var i = 0; i < fnames.length; i++){
+	ICONS.CHAPTERS[i] = fs.readFileSync("../assets/chapter-icons/"+fnames[i].split(" ")[0]+".svg").toString()
+	.replace(/width=".*?" height=".*?"/,`width="36" height="36"`)
+	// .replace(/<path/g,`<path vector-effect="non-scaling-stroke"`)
+	.replace(/stroke=".*?"/g,`stroke="currentColor"`)
+}
 
 
 var BLOCKS = txt.split("```");
@@ -259,8 +269,26 @@ function main(){
 		S.style.width = ww+"px";
 		S.style.right = (-window.innerWidth*r/(-ll*w))+"px";
 	}
+
+	function getCurrChap(){
+		for (var i = M.A.length-1; i >= 0;i--){
+			if (r < M.A[i]*w){
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	function calcCover(){
-		var _h = (document.getElementsByClassName("rail")[0].offsetHeight-2);
+		var _ra = document.getElementsByClassName("rail")[0];
+		if (!_ra){
+			_ra = document.getElementsByClassName("box")[0];
+		}
+		if (!_ra){
+			return;
+		}
+
+		var _h = (_ra.offsetHeight-2);
 		var _t = 204;
 
 		var cov = document.getElementById("cover");
@@ -273,6 +301,11 @@ function main(){
 		cov.style.fontFamily = "QIJI"
 		cov.style.fontSize="100px"
 		cov.style.pointerEvents="none"
+		if (cov.offsetLeft > window.innerWidth){
+			cov.style.display = "none";
+		}else{
+			cov.style.display = "block";
+		}
 
 
 		var bar = document.getElementById("bar");
@@ -333,27 +366,41 @@ function main(){
 				border-top:1px solid ${BLACK};
 			"></div>
 		`
-		var ok = false;
-		for (var i = M.A.length-1; i >= 0;i--){
-			if (r < M.A[i]*w){
-				var t = fnames[i].split(" ")[1].split(".")[0];
-				var s = "文言陰符內篇卷"+t.split("第")[1];
-				for (var j = 0; j < s.length; j++){
-					o += `<div style="position:absolute; font-size:20px; left:1px; top:${60+j*20}px">${s[j]}</div>`
-				}
-				for (var j = 0; j < t.length; j++){
-					o += `<div style="position:absolute; font-size:20px; left:1px; top:${Math.max(H*0.5,240)+j*20}px">${t[j]}</div>`
-				}
-				bar.onclick = function(){
-					setR(M.A[i]*w-w);
-					
-				}
-				ok = true;
-				break;
+		var i = getCurrChap();
+
+		if (i != -1){
+			var t = fnames[i].split(" ")[1].split(".")[0];
+			var s = "文言陰符內篇卷"+t.split("第")[1];
+			for (var j = 0; j < s.length; j++){
+				o += `<div style="position:absolute; font-size:20px; left:1px; top:${60+j*20}px">${s[j]}</div>`
 			}
+			for (var j = 0; j < t.length; j++){
+				o += `<div style="position:absolute; font-size:20px; left:1px; top:${Math.max(H*0.5,240)+j*20}px">${t[j]}</div>`
+			}
+			bar.onclick = function(){
+				setR(M.A[i]*w-w/2);
+			}
+			
+			bar.innerHTML = o;
+			bar.style.display = "block"
+
+			var tis = document.getElementById("toc-inner").children;
+			for (var j = 0; j < tis.length; j++){
+				tis[j].classList.remove("tocitem-curr");
+			}
+			tis[i].classList.add("tocitem-curr");
+			var tin = document.getElementById("toc-inner");
+			// console.log(tis[i].offsetLeft)
+			if (tis[i].offsetLeft+tin.offsetLeft < 10){
+				tin.style.left = (-tis[i].offsetLeft+10)+"px";
+			}
+			var tr = document.getElementById("toc").offsetWidth-180;
+			if (tis[i].offsetLeft+tin.offsetLeft > tr){
+				tin.style.left = -(tis[i].offsetLeft-tr)+"px";
+			}
+		}else{
+			bar.style.display = "none"
 		}
-		bar.innerHTML = o;
-		bar.style.display = ok?"block":"none"
 	}
 
 	function setR(_r){
@@ -363,7 +410,17 @@ function main(){
 		var O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 		calcCover()
-		rewheel({deltaX:1,deltaY:1})
+		rewheel({deltaX:1,deltaY:1,preventDefault:_=>0})
+	}
+	function slowSetR(_r){
+		for (var i = 0; i < 10; i++){
+			var t = i/10+0.1;
+			;;(function(){
+				var s = i*100;
+				var rr = r * (1-t) + _r * t;
+				setTimeout(function(){setR(rr)},s);
+			})()
+		}
 	}
 
 	function review(){
@@ -377,6 +434,7 @@ function main(){
 	}
 
 	function reflow(){
+		makeTOC();
 		H = Math.min(Math.max(window.innerHeight-200,h*15),h*50);
 
 		var n = Math.round((H-h-40)/h);
@@ -384,10 +442,10 @@ function main(){
 		ll = M.T[M.T.length-1].x-2;
 		calcSlider();
 		var O = typeset(M.T,M.F,l,r,w,h);
-		// rewheel({deltaX:1,deltaY:1})
+
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 		calcCover()
-		rewheel({deltaX:1,deltaY:1})
+		rewheel({deltaX:1,deltaY:1,preventDefault:_=>0})
 		
 	}
 	reflow();
@@ -405,9 +463,48 @@ function main(){
 		var O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
 		calcCover();
+		e.preventDefault();
 	}
 
 	document.getElementById("render").addEventListener('wheel', rewheel)
+
+	function makeTOC(){
+		document.getElementById("toc-inner").innerHTML = "";
+		for (var i = 0; i < fnames.length; i++){
+			var ti = document.createElement("div");
+			ti.classList.add("tocitem")
+			ti.style.left = (document.getElementById("toc").offsetWidth-180-i*180)+"px";
+			var t = fnames[i].split(" ")[1].split(".")[0].split("").reverse().join("");
+			if (t.length > 4){
+				t = t.replace("第","")
+			}
+			ti.innerHTML = `<div style="position:absolute;left:12px;top:9px">${t}</div><div style="position:absolute;right:10px;top:5px;">`+ICONS.CHAPTERS[i]+"</div>";
+			;;(function(){
+				var _i = i;
+				ti.onclick = function(){
+					setR(M.A[_i]*w-w/2);
+				}
+			})();
+			document.getElementById("toc-inner").appendChild(ti)
+		}
+	}
+	makeTOC();
+
+	document.getElementById("toc").addEventListener('wheel', function(e){
+		var tir = document.getElementById("toc-inner").offsetLeft;
+		tir -= e.deltaX;
+		tir += e.deltaY;
+		
+		if (tir < 0){
+			tir = 0;
+		}
+		if (tir > fnames.length*180-document.getElementById("toc").offsetWidth+10){
+			tir = fnames.length*180-document.getElementById("toc").offsetWidth+10
+		}
+		document.getElementById("toc-inner").style.left = tir+"px";
+		e.preventDefault();
+	})
+
 }
 var tw = 40;
 var html = `
@@ -554,6 +651,38 @@ body{
 #bar:hover{
 	background:#E7E7E7;
 }
+#toc{
+	position:absolute;
+	right:0px;
+	top:90px;
+	width:100%;
+	height:90px;
+	overflow:hidden;
+}
+#toc-inner{
+	position:absolute;
+}
+.tocitem{
+	position:absolute;
+	width:170px;
+	height:50px;
+	border-radius: 3px;
+	border: 1px solid lightgrey;
+	color: lightgrey;
+	font-family:QIJI;
+	font-size:32px;
+	cursor:pointer;
+	top:20px;
+}
+.tocitem-curr{
+	color: dimgrey;
+	border: 1px solid dimgrey;
+}
+.tocitem:hover{
+	color:${BLUE};
+	border: 1px solid ${BLUE};
+	background: rgba(32,64,128,0.03);
+}
 </style>
 <body>
 <div id="render"></div>
@@ -593,6 +722,7 @@ body{
 <div id="bar">
 
 </div>
+<div id="toc"><div id="toc-inner"></div></div>
 
 </body>
 <script>
