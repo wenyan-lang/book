@@ -49,7 +49,6 @@ const fs = require('fs');
 const semantic = require('./semantic')
 
 
-
 var fnames = fs.readdirSync("../").filter(x=>x.endsWith(".md")&&x.includes(" "))
 fnames.sort();
 var ftexts = fnames.map(x=>fs.readFileSync("../"+x).toString())
@@ -58,6 +57,9 @@ for (var i = 0; i < ftexts.length; i++){
 	ftexts[i] = ftexts[i].replace(/  /g,"　").replace(/\t/g,"　")//U+3000 ideograph sapce
 }
 var txt = ftexts.join("\n");
+txt = "文言陰符內篇　　　　黃令東\n　　"+fnames.map((x,i)=>x.split(" ")[1].split(".")[0]+(i%2==1?"\n　":(i>=10?"":"　"))).join("　")+"\n"+txt;
+
+
 var BLOCKS = txt.split("```");
 var bl = txt.split("```");
 var sem = [];
@@ -83,10 +85,11 @@ for (var i = 0; i < bl.length; i++){
 function matrix(bl,sem,H){
 
 	var T = [];
-	var x = 0;
+	var x = -10;
 	var y = 0;
 	var w = 1;
 	var F = [];
+	var A = [];
 	for (var i = 0; i < bl.length; i++){
 		// if (i % 2 == 1){
 			x -= w;	
@@ -121,6 +124,7 @@ function matrix(bl,sem,H){
 				ind = 0;
 			}else if (t == "#"){
 				w = 2;
+				A.push(x)
 				x -= 1;
 			}else if (t == "-"){
 				ind = 2;
@@ -137,7 +141,7 @@ function matrix(bl,sem,H){
 		}
 		F.push([fen,x])
 	}
-	return {T,F};
+	return {T,F,A};
 }
 
 
@@ -248,10 +252,118 @@ function main(){
 	var r = 0;
 	var O;
 	var ll = 0;
+	var H = window.innerHeight-200;
+
 	function calcSlider(){
 		var ww = window.innerWidth*(r-l)/(-ll*w)
 		S.style.width = ww+"px";
 		S.style.right = (-window.innerWidth*r/(-ll*w))+"px";
+	}
+	function calcCover(){
+		var _h = (document.getElementsByClassName("rail")[0].offsetHeight-2);
+		var _t = 204;
+
+		var cov = document.getElementById("cover");
+		cov.style.position = "absolute"
+		cov.style.height = (_h-3)+"px";
+		cov.style.top = _t+"px"
+		cov.style.right = (r+40)+"px"
+		cov.style.width =(w*9)+"px"
+		cov.style.border = `3px solid ${BLACK}`
+		cov.style.fontFamily = "QIJI"
+		cov.style.fontSize="100px"
+		cov.style.pointerEvents="none"
+
+
+		var bar = document.getElementById("bar");
+		bar.style.position = "absolute"
+		bar.style.height = _h+"px";
+		bar.style.top = _t+"px"
+		bar.style.right = "0px";
+		bar.style.width = "20px";
+		bar.style.borderLeft = `1px solid ${BLACK}`;
+		bar.style.borderTop = `1px solid ${BLACK}`;
+		bar.style.borderBottom = `1px solid ${BLACK}`;
+		bar.style.boxShadow = `-1px 0px 2px rgba(0,0,0,0.1)`
+		// bar.style.background = `#EFEFEF`
+		bar.style.color = BLACK
+		bar.style.zIndex = 10000
+		bar.style.fontFamily="QIJI";
+		bar.style.cursor="pointer";
+
+		var o = `
+			<div style="
+				position:absolute;
+				top:20px;
+				left:0px;
+				height:10px;
+				width:20px;
+				border-top:1px solid ${BLACK};
+			"></div>
+			<div style="
+				top:25px;
+				left:0px;
+				position:absolute;
+				width: 0;
+				height: 0;
+				border-left: 0px solid transparent;
+				border-right: 35px solid transparent;
+				border-top: 20px solid ${BLACK};
+			"></div>
+			<div style="
+				position:absolute;
+				height:20px;
+				width:35px;
+				top:30px;
+				left:0px;
+		     	background: 
+		        linear-gradient(to top left,
+		            rgba(0,0,0,0) 0%,
+		            rgba(0,0,0,0) calc(50% - 0.8px),
+		            rgba(0,0,0,1) 50%,
+		            rgba(0,0,0,0) calc(50% + 0.8px),
+		            rgba(0,0,0,0) 100%);
+			"></div>
+			<div style="
+				position:absolute;
+				top:${Math.max(H*0.5,240)}px;
+				left:0px;
+				height:10px;
+				width:20px;
+				border-top:1px solid ${BLACK};
+			"></div>
+		`
+		var ok = false;
+		for (var i = M.A.length-1; i >= 0;i--){
+			if (r < M.A[i]*w){
+				var t = fnames[i].split(" ")[1].split(".")[0];
+				var s = "文言陰符內篇卷"+t.split("第")[1];
+				for (var j = 0; j < s.length; j++){
+					o += `<div style="position:absolute; font-size:20px; left:1px; top:${60+j*20}px">${s[j]}</div>`
+				}
+				for (var j = 0; j < t.length; j++){
+					o += `<div style="position:absolute; font-size:20px; left:1px; top:${Math.max(H*0.5,240)+j*20}px">${t[j]}</div>`
+				}
+				bar.onclick = function(){
+					setR(M.A[i]*w-w);
+					
+				}
+				ok = true;
+				break;
+			}
+		}
+		bar.innerHTML = o;
+		bar.style.display = ok?"block":"none"
+	}
+
+	function setR(_r){
+		r = _r;
+		l = r-window.innerWidth;
+		calcSlider();
+		var O = typeset(M.T,M.F,l,r,w,h);
+		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
+		calcCover()
+		rewheel({deltaX:1,deltaY:1})
 	}
 
 	function review(){
@@ -261,21 +373,27 @@ function main(){
 		// l = r-window.innerWidth;
 		O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
+		calcCover()
 	}
 
 	function reflow(){
-		var n = Math.round((window.innerHeight-200-h-40)/h);
+		H = Math.min(Math.max(window.innerHeight-200,h*15),h*50);
+
+		var n = Math.round((H-h-40)/h);
 		M = matrix(bl,sem,n);
 		ll = M.T[M.T.length-1].x-2;
 		calcSlider();
 		var O = typeset(M.T,M.F,l,r,w,h);
+		// rewheel({deltaX:1,deltaY:1})
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
+		calcCover()
+		rewheel({deltaX:1,deltaY:1})
 		
 	}
 	reflow();
 	document.body.onresize = reflow;
 
-	document.getElementById("render").addEventListener('wheel', (e)=> {
+	function rewheel(e){
 		l += e.deltaX;
 		r += e.deltaX;
 		l -= e.deltaY;
@@ -286,9 +404,12 @@ function main(){
 		calcSlider();
 		var O = typeset(M.T,M.F,l,r,w,h);
 		R.innerHTML = `<div style="position:absolute;top:20px;">${O}</div>`;
-	})
-}
+		calcCover();
+	}
 
+	document.getElementById("render").addEventListener('wheel', rewheel)
+}
+var tw = 40;
 var html = `
 <!--GENERATED FILE DO NOT EDIT-->
 <head>
@@ -415,20 +536,70 @@ body{
 #editor-run{
 	top:25px;
 }
+#cover:after{
+	content:"";
+	position:absolute;
+	left:0px;
+	right:0px;
+	top:0px;
+	bottom:0px;
+	/*background-image: url(bg.png);*/
+	/*background-repeat: repeat;*/
+	opacity:0.05;
+	z-index: -1;
+}
+#bar{
+	background:#EFEFEF;
+}
+#bar:hover{
+	background:#E7E7E7;
+}
 </style>
 <body>
 <div id="render"></div>
+<div id="cover">
+	<div style="position:absolute;left:72px;width:calc(100% - 144px);top:0px;height:100%;border-left:2px solid ${BLACK};border-right:2px solid ${BLACK}">
+		${fs.readFileSync("../assets/title.svg").toString().replace("<svg ",`<svg style="height:85%;width:100%;position:absolute;top:5%;"`)}
+	</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*0}px">文</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*1}px">言</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*2}px">語</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*3}px">言</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*4}px">編</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*5}px">程</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*6}px">入</div>
+	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*7}px">門</div>
+
+
+	<div style="position:absolute; font-size:28px; left:37px; top:calc(100% - 122px)">庚</div>
+	<div style="position:absolute; font-size:28px; left:37px; top:calc(100% - 94px)">子</div>
+	<div style="position:absolute; font-size:28px; left:37px; top:calc(100% - 66px)">年</div>
+	<div style="position:absolute; font-size:28px; left:37px; top:calc(100% - 38px)">春</div>
+
+	<div style="position:absolute; font-size:28px; left:7px; top:calc(100% - 122px)">黃</div>
+	<div style="position:absolute; font-size:28px; left:7px; top:calc(100% - 94px)">令</div>
+	<div style="position:absolute; font-size:28px; left:7px; top:calc(100% - 66px)">東</div>
+	<div style="position:absolute; font-size:28px; left:7px; top:calc(100% - 38px)">編</div>
+
+	${fs.readFileSync("../assets/exlibris.svg").toString().replace("<svg ",`<svg style="position:absolute;left:-9px;bottom:10px;height:80px;"`)}
+</div>
 <div id="slider"></div>
 <div id="editor-wrap" style="left:-1000px;">
 	<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
 	<div class="editor-btn" id="editor-close" onclick="document.getElementById('editor-wrap').style.left='-10000px'">${ICONS.CLOSE}</div>
 	<div class="editor-btn" id="editor-run" onclick="document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')">${ICONS.PLAY}</div>
 </div>
+
+<div id="bar">
+
+</div>
+
 </body>
 <script>
 ${constants}
 var BLOCKS = ${JSON.stringify(BLOCKS)};
 var ICONS = ${JSON.stringify(ICONS)}
+var fnames = ${JSON.stringify(fnames)}
 var bl = ${JSON.stringify(bl)};
 var sem = ${JSON.stringify(sem)}
 var matrix = ${matrix.toString()};
@@ -438,3 +609,6 @@ var typeset = ${typeset.toString()};
 `
 
 fs.writeFileSync("../site/index.html",html)
+
+fs.copyFileSync("../assets/font.ttf","../site/font.ttf")
+fs.copyFileSync("../assets/font.woff2","../site/font.woff2")

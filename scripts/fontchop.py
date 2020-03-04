@@ -9,7 +9,7 @@ import os
 
 corp = "".join([open(x,'r').read() for x in glob("../../wenyan-book/*.md")])
 # scorp = "".join(sorted(list(set([x for x in list(corp) if (0x4e00 < ord(x) < 0x9fff)]))))+"。、 "
-scorp = "".join(sorted(list(set([x for x in list(corp)]))))
+scorp = "".join(sorted(list(set([x for x in list(corp)]))))+"卷撰"
 keep = [x for x in scorp]
 
 
@@ -116,5 +116,5 @@ for f in glob("../../qiji-font/output/fallback_stage/*.svg"):
 
 print(len(list(font.glyphs())))
 
-font.generate("../site/font.ttf")
-os.system("rm ../site/font.woff2; cat ../site/font.ttf | ttf2woff2 >> ../site/font.woff2")
+font.generate("../assets/font.ttf")
+os.system("rm ../assets/font.woff2; cat ../assets/font.ttf | ttf2woff2 >> ../assets/font.woff2")
