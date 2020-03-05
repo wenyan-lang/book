@@ -762,6 +762,7 @@ a:active{
 <span class="text-btn" onclick="document.documentElement.style.filter=document.documentElement.style.filter.length?'':'invert(95%)';this.innerHTML={'[light]':'[dark]','[dark]':'[light]'}[this.innerHTML]">[dark]</span>
 <span class="text-btn" onclick="document.getElementById('help').style.display={'block':'none','none':'block'}[document.getElementById('help').style.display];">[help]</span>
 </div>
+<div style="position:absolute;left:20px;top:20px">${fs.readFileSync("../assets/wy-logo.svg").toString()}</div>
 <div id="render"></div>
 <div id="cover">
 	<div style="position:absolute;left:72px;width:calc(100% - 144px);top:0px;height:100%;border-left:2px solid ${BLACK};border-right:2px solid ${BLACK}">
