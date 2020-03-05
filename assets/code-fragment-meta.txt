@@ -1,0 +1,151 @@
+# metadata for code fragments
+# each line correspond to a code fragment
+# lines starting with # are comments
+# numbers are relative indices of code required for this code to run
+# X means not executable
+#
+# chapter 1
+0
+X
+0
+0
+-1 0
+0
+# chapter 2
+0
+0
+0
+0
+0
+0
+-1 0
+0
+0
+# chapter 3
+0
+0
+X
+0
+X
+0
+0
+X
+吾有二數。曰五百七十九。曰二千二百八十三。名之曰「頭」曰「足」。 -2
+0
+X
+# chapter 4
+0
+0
+0
+0
+吾有二爻。曰陰。曰陽。名之曰「甲」曰「乙」。 0
+吾有二爻。曰陰。曰陽。名之曰「甲」曰「乙」。 0
+吾有二爻。曰陰。曰陽。名之曰「甲」曰「乙」。 0
+1 0
+0 -1
+X
+# chapter 5
+X
+0
+吾有一列。名之曰「列」。充「列」以一以二以三。 0
+0
+有數九百九十九。名之曰「始」。 -1
+0
+0
+# chapter 6
+0
+0
+-2 -1 0
+-3 -2 吾有一列。名之曰「丁」。充「丁」以九。 -1 0
+-4 -3 0
+-5 -4 -3 0
+-6 0
+-7 0
+0
+-9 0
+0
+-1 0
+-2 0
+X
+0
+-1 0
+-2 -1 0
+X
+# chapter 7
+0
+-1 0
+0
+X
+0
+-1 0
+X
+0
+0
+# chapter 8
+0
+-1 0
+0
+-1 0
+0
+0
+0
+0
+-1 0
+X
+0
+X
+0
+-1 0
+X
+0
+0
+0
+0
+# chapter 9
+0
+-1 0
+0
+0
+-1 0
+-2 0
+-3 0
+-4 0
+-5 0
+0
+X
+# chapter 10
+0
+-1 0
+-2 0
+0
+-1 0
+-5 0
+0
+-7 0
+X
+-6 -5 0
+X
+-11 0
+X
+# chapter 11
+0
+0
+0
+0
+0
+0
+-1 0
+-2 -1 0
+0
+# chapter 12
+0
+0
+0
+0
+0
+0
+0
+0
+# chapter 13
+0
+0

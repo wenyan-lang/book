@@ -92,6 +92,10 @@ for (var i = 0; i < bl.length; i++){
 	}
 }
 
+var CODEMETA = fs.readFileSync("../assets/code-fragment-meta.txt").toString().split("\n")
+	.filter(x=>!x.startsWith("#")&&x.length).map(x=>x.trim())
+	.map(x=>x.split(" ").map(y=>isNaN(parseInt(y))?y:parseInt(y)));
+
 function matrix(bl,sem,H){
 
 	var T = [];
@@ -198,15 +202,27 @@ function typeset(T,F,l,r,w,h){
 				var run = (`
 				(function (){
 					var _i = ${i};
-					window.currentCode = BLOCKS[_i].slice(1);
+					var m = CODEMETA[(_i-1)/2];
+					var c = '';
+					for (var j = 0; j < m.length; j++){
+						if (typeof m[j] == 'string'){
+							c += m[j];
+						}else{
+							c += BLOCKS[_i+m[j]*2].slice(1);
+						}
+						c += '\\n'
+					}
+					window.currentCode = c;
 					document.getElementById('editor-wrap').style.left='10px';
-					document.getElementById('editor').contentWindow.postMessage({action:'code',value: BLOCKS[_i].slice(1)},'*')
+					document.getElementById('editor').contentWindow.postMessage({action:'code',value: c},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'set-view',value:50},'*')
 				})()
 				`).replace(/\n/g,';')
 				O += `<div class="box" style="top:${-2}px; left:${F[i][1]*w-l-10}px; width:${(F[i][0]-F[i][1])*w+20}px; height:${ymax+h+4}px; transform:;"></div>`
-				O += `<div class="popbtn" onclick="${run}" style="top:${Math.round(ymax+h-18)}px; left:${Math.round(F[i][1]*w-l-10)}px; width:${20}px; height:${20}px;">${ICONS.OPEN_IN_NEW}</div>`
+				if (CODEMETA[(i-1)/2][0] != 'X'){
+					O += `<div class="popbtn" onclick="${run}" style="top:${Math.round(ymax+h-18)}px; left:${Math.round(F[i][1]*w-l-10)}px; width:${20}px; height:${20}px;">${ICONS.OPEN_IN_NEW}</div>`
+				}
 			}else{
 				for (var j = F[i][1]; j < F[i][0]; j++){
 					O += `<div class="rail${(j==F[i][0]-1)?'f':''}" style="top:${-2}px; left:${j*w-l}px; width:${w}px; height:${ymax+h+4}px;"></div>`
@@ -533,6 +549,8 @@ function main(){
 
 	document.getElementById("toc").addEventListener('wheel', rewheelTOC)
 
+	window.addEventListener('message', (e) => {window.currentCode=e.data.value.code})
+
 }
 var tw = 40;
 var html = `
@@ -836,7 +854,7 @@ a:active{
 	<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
 	<div class="editor-btn" id="editor-close" onclick="document.getElementById('editor-wrap').style.left='-10000px'">${ICONS.CLOSE}</div>
 	<div class="editor-btn" id="editor-run" onclick="document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')">${ICONS.PLAY}</div>
-	<div class="editor-btn" id="editor-goto" onclick="newwindow=window.open('http://ide.wy-lang.org/embed?autorun&show-bars&code='+encodeURI(window.currentCode),'','height=800,width=600');if(window.focus){newwindow.focus()}">${ICONS.OPEN_IN_NEW}</div>
+	<div class="editor-btn" id="editor-goto" onclick="newwindow=window.open('http://ide.wy-lang.org/embed?autorun&show-bars&code='+encodeURI(window.currentCode),'','height=800,width=600,toolbar=no,menubar=no,location=no,addressbar=no,');if(window.focus){newwindow.focus()}">${ICONS.OPEN_IN_NEW}</div>
 </div>
 
 <div id="bar">
@@ -870,6 +888,7 @@ Check out the <a href="https://github.com/wenyan-lang/wenyan/wiki">wenyan-wiki</
 <script>
 ${constants}
 var BLOCKS = ${JSON.stringify(BLOCKS)};
+var CODEMETA = ${JSON.stringify(CODEMETA)};
 var ICONS = ${JSON.stringify(ICONS)}
 var fnames = ${JSON.stringify(fnames)}
 var bl = ${JSON.stringify(bl)};
