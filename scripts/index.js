@@ -468,6 +468,31 @@ function main(){
 
 	document.getElementById("render").addEventListener('wheel', rewheel)
 
+	var touchX;
+    document.getElementById("render").addEventListener('touchstart', function(e){
+        touchX = e.changedTouches[0].clientX
+        e.preventDefault()
+    }, false)
+    document.getElementById("render").addEventListener('touchmove', function(e){
+       var dist = parseInt(e.changedTouches[0].clientX) - touchX;
+       setR(r-dist);
+       // e.preventDefault();
+    }, false)
+    document.getElementById("render").addEventListener('touchend', function(e){
+        e.preventDefault()
+    }, false)
+
+    document.getElementById("toc").addEventListener('touchstart', function(e){
+        touchX = e.changedTouches[0].clientX
+    }, false)
+    document.getElementById("toc").addEventListener('touchmove', function(e){
+       var dist = parseInt(e.changedTouches[0].clientX) - touchX;
+       rewheelTOC({deltaX:-dist,deltaY:0,preventDefault:_=>0})
+       // e.preventDefault();
+    }, false)
+    document.getElementById("toc").addEventListener('touchend', function(e){
+    }, false)
+
 	function makeTOC(){
 		document.getElementById("toc-inner").innerHTML = "";
 		for (var i = 0; i < fnames.length; i++){
@@ -490,7 +515,7 @@ function main(){
 	}
 	makeTOC();
 
-	document.getElementById("toc").addEventListener('wheel', function(e){
+	function rewheelTOC(e){
 		var tir = document.getElementById("toc-inner").offsetLeft;
 		tir -= e.deltaX;
 		tir += e.deltaY;
@@ -503,7 +528,9 @@ function main(){
 		}
 		document.getElementById("toc-inner").style.left = tir+"px";
 		e.preventDefault();
-	})
+	}
+
+	document.getElementById("toc").addEventListener('wheel', rewheelTOC)
 
 }
 var tw = 40;
@@ -523,12 +550,20 @@ var html = `
 }
 :root{
 	background:white;
+	overflow:hidden;
 }
 body{
 	margin:0px;
 	background:#EFEFEF;
 	overflow: hidden;
-	overscroll-behavior-x: none; /* disable THE worst feature on chrome */
+	overscroll-behavior-x: none; /* fix worst feature on Chrome */
+	overflow:hidden;
+}
+#body{ /* mobile safari ugh! */
+	width:100%;
+	overflow:hidden;
+	overflow-x:hidden;
+	overflow-y:hidden;
 }
 .text{
 	position:absolute;
@@ -595,6 +630,7 @@ body{
 	width:100%;
 	border-top: 1px solid lightgrey;
 	border-bottom: 1px solid lightgrey;
+	overflow:hidden;
 }
 #slider{
 	position:absolute;
@@ -753,7 +789,8 @@ a:active{
 	padding:3px;
 }
 </style>
-<body>
+<body><div id="body" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px">
+
 <div id="title">
 <h1>wenyan-book / 文言陰符</h1>
 <h2>An Introduction to Programming in Wenyan Language / 文言文編程入門</h2>
@@ -824,7 +861,7 @@ Check out the <a href="https://github.com/wenyan-lang/wenyan/wiki">wenyan-wiki</
 <div class="editor-btn" id="editor-close" onclick="document.getElementById('help').style.display='none'">${ICONS.CLOSE}</div>
 </div>
 
-</body>
+</div></body>
 <script>
 ${constants}
 var BLOCKS = ${JSON.stringify(BLOCKS)};
