@@ -198,8 +198,9 @@ function typeset(T,F,l,r,w,h){
 				var run = (`
 				(function (){
 					var _i = ${i};
+					window.currentCode = BLOCKS[_i].slice(1);
 					document.getElementById('editor-wrap').style.left='10px';
-					document.getElementById('editor').contentWindow.postMessage({action:'code',value:BLOCKS[_i].slice(1)},'*')
+					document.getElementById('editor').contentWindow.postMessage({action:'code',value: BLOCKS[_i].slice(1)},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')
 					document.getElementById('editor').contentWindow.postMessage({action:'set-view',value:50},'*')
 				})()
@@ -676,6 +677,9 @@ body{
 #editor-run{
 	top:25px;
 }
+#editor-goto{
+	top:50px;
+}
 #cover:after{
 	content:"";
 	position:absolute;
@@ -799,7 +803,7 @@ a:active{
 <span class="text-btn" onclick="document.documentElement.style.filter=document.documentElement.style.filter.length?'':'invert(95%)';this.innerHTML={'[light]':'[dark]','[dark]':'[light]'}[this.innerHTML]">[dark]</span>
 <span class="text-btn" onclick="document.getElementById('help').style.display={'block':'none','none':'block'}[document.getElementById('help').style.display];">[help]</span>
 </div>
-<div style="position:absolute;left:20px;top:20px">${fs.readFileSync("../assets/wy-logo.svg").toString()}</div>
+<div style="position:absolute;left:20px;top:15px;opacity:0.5">${fs.readFileSync("../assets/wy-logo.svg").toString().replace(/<g>[^]*?<\/g>/,"")}</div>
 <div id="render"></div>
 <div id="cover">
 	<div style="position:absolute;left:72px;width:calc(100% - 144px);top:0px;height:100%;border-left:2px solid ${BLACK};border-right:2px solid ${BLACK}">
@@ -832,6 +836,7 @@ a:active{
 	<iframe frameBorder="0" src="https://ide.wy-lang.org/embed?autorun&code=注曰「「文言備矣」」" id="editor"></iframe>
 	<div class="editor-btn" id="editor-close" onclick="document.getElementById('editor-wrap').style.left='-10000px'">${ICONS.CLOSE}</div>
 	<div class="editor-btn" id="editor-run" onclick="document.getElementById('editor').contentWindow.postMessage({action:'run'},'*')">${ICONS.PLAY}</div>
+	<div class="editor-btn" id="editor-goto" onclick="newwindow=window.open('http://ide.wy-lang.org/embed?autorun&show-bars&code='+encodeURI(window.currentCode),'','height=800,width=600');if(window.focus){newwindow.focus()}">${ICONS.OPEN_IN_NEW}</div>
 </div>
 
 <div id="bar">
