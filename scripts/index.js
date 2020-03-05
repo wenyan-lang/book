@@ -510,7 +510,9 @@ var tw = 40;
 var html = `
 <!--GENERATED FILE DO NOT EDIT-->
 <head>
-	<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="description" content="An Introduction to Programming in Wenyan Language">
+  <title>wenyan-book</title>
 </head>
 <script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
 <style id="style">
@@ -519,7 +521,11 @@ var html = `
 	font-display: swap;
 	src: url('font.woff2') format('woff2'), url('font.ttf') format('truetype');
 }
+:root{
+	background:white;
+}
 body{
+	margin:0px;
 	background:#EFEFEF;
 	overflow: hidden;
 	overscroll-behavior-x: none; /* disable THE worst feature on chrome */
@@ -595,6 +601,7 @@ body{
 	background: #BBB;
 	height:20px;
 	top:calc(100% - 18px);
+	cursor:ew-resize;
 }
 #editor-wrap{
 	position:absolute;
@@ -613,7 +620,7 @@ body{
 .editor-btn{
 	position:absolute;
 	left:100%;
-	background: rgba(255,255,255,0.5);
+	background: whitesmoke;
 	border: 1px solid grey;
 	border-radius: 2px;
 	width: 20px;
@@ -667,8 +674,8 @@ body{
 	width:170px;
 	height:50px;
 	border-radius: 3px;
-	border: 1px solid lightgrey;
-	color: lightgrey;
+	border: 1px solid silver;
+	color: silver;
 	font-family:QIJI;
 	font-size:32px;
 	cursor:pointer;
@@ -683,8 +690,78 @@ body{
 	border: 1px solid ${BLUE};
 	background: rgba(32,64,128,0.03);
 }
+#title{
+	font-family: Helvetica, Arial, sans-serif;
+	color: grey;
+	width:400px;
+	height:70px;
+	position:absolute;
+	right:20px;
+	padding:10px;
+	text-align:right;
+	font-size:12px;
+	top:5px;
+}
+h1{
+	font-weight: normal;
+	padding:0px;
+	margin:0px;
+	font-size:16px;
+}
+h2{
+	font-weight: normal;
+	padding:0px;
+	margin:0px;
+	font-style: italic;
+	font-size:12px;
+}
+a:link{
+	color:grey;
+}
+a:hover{
+	color:black !important;
+}
+a:visited{
+	color:grey;
+}
+a:active{
+	color:black;
+}
+.text-btn{
+	cursor:pointer;
+}
+.text-btn:hover{
+	text-decoration:underline;
+	color:black;
+}
+#help{
+	font-family: Helvetica, Arial, sans-serif;
+	font-size:14px;
+	width:300px;
+	height:300px;
+	position:absolute;
+	left:calc(50% - 180px);
+	top:calc(50% - 180px);
+	background: whitesmoke;
+	border: 1px solid grey;
+	box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+	z-index: 10000;
+	border-radius: 2px;
+	padding: 30px;
+}
+#help>div{
+	padding:3px;
+}
 </style>
 <body>
+<div id="title">
+<h1>wenyan-book / 文言陰符</h1>
+<h2>An Introduction to Programming in Wenyan Language / 文言文編程入門</h2>
+<a href="https://github.com/LingDong-/wenyan-book">github</a> | <a href="https://wy-lang.org/">wenyan-lang</a> | <a href="https://github.com/wenyan-lang/wenyan/wiki">wiki</a> | <a href="https://lingdong.works/">lingdong</a>
+<br>
+<span class="text-btn" onclick="document.documentElement.style.filter=document.documentElement.style.filter.length?'':'invert(95%)';this.innerHTML={'[light]':'[dark]','[dark]':'[light]'}[this.innerHTML]">[dark]</span>
+<span class="text-btn" onclick="document.getElementById('help').style.display={'block':'none','none':'block'}[document.getElementById('help').style.display];">[help]</span>
+</div>
 <div id="render"></div>
 <div id="cover">
 	<div style="position:absolute;left:72px;width:calc(100% - 144px);top:0px;height:100%;border-left:2px solid ${BLACK};border-right:2px solid ${BLACK}">
@@ -723,6 +800,28 @@ body{
 
 </div>
 <div id="toc"><div id="toc-inner"></div></div>
+
+
+<div id="help" style="display:none">
+<div style="font-size:20px">Help</div>
+<div style="color:dimgrey;">
+You're viewing an online version of the book, <i>An Introduction to Programming in Wenyan Language</i>.
+Wenyan is a programming language in Classical Chinese. Coincidentally, this book is also written in Classical Chinese.
+</div><div>
+How to navigate?
+</div><div style="color:dimgrey;">
+Scroll with scrollwheel or trackpad, or drag the scrollbar at the bottom.
+To jump to a chapter, click on the tab bearing its title.
+</div><div>
+Slow with vertical text?
+</div><div style="color:dimgrey;">
+Read the <a href="https://github.com/LingDong-/wenyan-book">markdowns</a> directly on Github.
+</div><div>
+Don't know Classical Chinese?
+</div><div style="color:dimgrey;">
+Check out the <a href="https://github.com/wenyan-lang/wenyan/wiki">wenyan-wiki</a> (English).
+<div class="editor-btn" id="editor-close" onclick="document.getElementById('help').style.display='none'">${ICONS.CLOSE}</div>
+</div>
 
 </body>
 <script>
