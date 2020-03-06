@@ -5,7 +5,7 @@ QR1 = "」"
 
 PRD = "。"
 RED = "#BB705A";
-BLACK = "#2B2B2B";
+BLACK = "#000";
 BLUE = "#357";
 FONT = "QIJIC"
 
@@ -41,11 +41,9 @@ COLORS = {
 
 const fs = require('fs');
 const semantic = require('./semantic')
-const {createCanvas} = require('canvas')
 var { num2hanzi } = require("@wenyanlang/core")
 
-// var Okb = require("./_modules/Okb");
-// var cv= require("./_modules/opencv");
+var execSync = require('child_process').execSync;
 
 
 var fnames = fs.readdirSync("../").filter(x=>x.endsWith(".md")&&x.includes(" "))
@@ -347,7 +345,11 @@ var [pl,pr,pt,pb] = [25,20,125,45]
 var {T,F,A} = matrix(bl,sem,C,R)
 var P = typeset(T,F,C,R,W,H,pl,pr,pt,pb)
 for (var i = 0; i < P.length; i++){
-	fs.writeFileSync(`../tmp/${i.toString().padStart(3,'0')}.svg`,P[i])
+	var f = `${i.toString().padStart(3,'0')}`
+	fs.writeFileSync(`../tmp/${f}.svg`,P[i]);
+	execSync(`cd ../tmp; cairosvg -f pdf ${f}.svg > ${f}.pdf`, { encoding: 'utf-8' });
+	console.log(i,'/',P.length);
 }
-console.log(P.length)
 
+execSync(`"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ../assets/wenyan-book.pdf ../tmp/*.pdf`, { encoding: 'utf-8' });
+console.log('done');
