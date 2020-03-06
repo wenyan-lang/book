@@ -1,3 +1,5 @@
+const CVT_PDF = true
+
 QL2 = "『"
 QR2 = "』"
 QL1 = "「"
@@ -210,7 +212,12 @@ function typeset(T,F,C,R,W,H,pl,pr,pt,pb){
 			P[T[i].p] += `<text font-family="${FONT}" y="${oy+h/4+h+dy}" x="${ox+h/2+dx}" font-size="${h*f*ff}" fill="${RED}">${t}</text>`
 		}else{
 			var iso = (t=="〇");
-			P[T[i].p] += `<text font-family="${FONT}" y="${oy+(f>1?h/2:0)+h+dy}" x="${ox+iso*h*0.15+dx}" font-size="${h*f*(iso?0.8:ff)}" ${cstr}>${t}</text>`
+			if (iso){
+				P[T[i].p] += `<circle cy="${oy+(f>1?h/2:0)+h+dy-h/2+h/10}" cx="${ox+dx+h/2+h/20}" r="${h/3.5}" fill="none" stroke-width="1.5" stroke="${COLORS[T[i].s]}"></circle>`
+			}else{
+				P[T[i].p] += `<text font-family="${FONT}" y="${oy+(f>1?h/2:0)+h+dy}" x="${ox+dx}" font-size="${h*f*ff}" ${cstr}>${t}</text>`
+
+			}
 		}
 
 		if (PA[T[i].p] == undefined || PA[T[i].p] == -1){
@@ -298,7 +305,7 @@ if(i!=0)P2[i] += `<path fill="none" stroke="${BLACK}" stroke-width="${1}" d="M${
 if(i!=0)P2[i] += `<path fill="none" stroke="${BLACK}" stroke-width="${1}" d="M${W*2} ${pt+Hs-d} L${W*2-pr} ${pt+Hs-d}"></path>`
 		P2[i] += `<path fill="none" stroke="${BLACK}" stroke-width="${1}" d="M${0} ${pt+Hs-d} L${pr} ${pt+Hs-d}"></path>`
 
-		if (i != 0){
+
 		var t = "文言陰符內篇卷"
 		var _tp = fnames[PA[i*2]].split(" ")[1].split(".")[0]
 		var _tq = fnames[PA[i*2+1]].split(" ")[1].split(".")[0]
@@ -307,6 +314,13 @@ if(i!=0)P2[i] += `<path fill="none" stroke="${BLACK}" stroke-width="${1}" d="M${
 
 		var ttp = num2hanzi(i*2-1);
 		var ttq = num2hanzi(i*2);
+
+		if (i == 0){
+			tp = tq =  "文言陰符內篇目錄"
+			ttp = ttq = "";
+			_tp =  _tq = "";
+			P2[i] += `<g transform="translate(${W} 0)">${titlepage(W,H,pl,pr,pt,pb)}</g>`;
+		}
 
 
 if(i!=0)for (var j = 0; j < tp.length; j++){
@@ -332,24 +346,107 @@ if(i!=0)for (var j = 0; j < ttp.length; j++){
 		for (var j = 0; j < ttq.length; j++){
 			P2[i] += `<text font-family="${FONT}" y="${pt+pl*0.2+Hq+j*20}" x="${0}" font-size="${20}" fill="${BLACK}">${ttq[j]}</text>`	
 		}
-	}
+	
 
 		P2[i] += `</svg>`
 	}
 	return P2;
 }
-var C = 11
-var R = 27
-var [W,H]=[500,900]
-var [pl,pr,pt,pb] = [25,20,125,45]
-var {T,F,A} = matrix(bl,sem,C,R)
-var P = typeset(T,F,C,R,W,H,pl,pr,pt,pb)
-for (var i = 0; i < P.length; i++){
-	var f = `${i.toString().padStart(3,'0')}`
-	fs.writeFileSync(`../tmp/${f}.svg`,P[i]);
-	execSync(`cd ../tmp; cairosvg -f pdf ${f}.svg > ${f}.pdf`, { encoding: 'utf-8' });
-	console.log(i,'/',P.length);
+
+function titlepage(W,H,pl,pr,pt,pb){
+	var WM = (W-pl-pr)*0.6;
+	var WL = ((W-pl-pr)-WM)/2;
+
+	var tw = WL/1.8;
+	var sw = WL/2.5;
+	var tr = [0,0]
+	var sr = [0,0]
+
+	var ti = fs.readFileSync("../assets/title.svg").toString().replace(/width="(.*?)" height="(.*?)"/,function(_,w,h){
+		var hh = (H-pt-pb)*0.9;
+		var ww = hh*w/h;
+		tr = [pl+WL+(WM-ww)/2,pt+(H-pt-pb-hh)/2]
+		return `width="${ww}" height="${hh}"`
+	})
+
+	var se = fs.readFileSync("../assets/exlibris.svg").toString().replace(/width="(.*?)" height="(.*?)"/,function(_,w,h){
+		var ww = WL*0.8;
+		var hh = ww*h/w;
+		sr = [pl+WL+WM+(WL-ww)/2,H-pb-hh-sw*0.25]
+		return `width="${ww}" height="${hh}"`
+	})
+
+	return `
+	<rect fill="none" stroke-width="3" stroke="${BLACK}" x="${pl}" y="${pt}" width="${W-pl-pr}" height="${H-pt-pb}"></rect>
+	<rect fill="none" stroke-width="1" stroke="${BLACK}" x="${pl+WL}" y="${pt}" width="${WM}" height="${H-pt-pb}"></rect>
+
+	<g transform="translate(${tr[0]} ${tr[1]})">${ti}</g>
+	<g transform="translate(${sr[0]} ${sr[1]})">${se}</g>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*1}px">文</text>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*2}px">言</text>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*3}px">編</text>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*4}px">程</text>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*5}px">入</text>
+	<text font-family="${FONT}" font-size="${tw}" x="${pl+WL+WM+(WL-tw)/2}" y="${pt+tw*6}px">門</text>
+
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl+sw}" y="${H-pb-sw*0.5-sw*3}">庚</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl+sw}" y="${H-pb-sw*0.5-sw*2}">子</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl+sw}" y="${H-pb-sw*0.5-sw*1}">年</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl+sw}" y="${H-pb-sw*0.5-sw*0}">春</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl}"    y="${H-pb-sw*0.5-sw*3}">黃</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl}"    y="${H-pb-sw*0.5-sw*2}">令</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl}"    y="${H-pb-sw*0.5-sw*1}">東</text>
+	<text font-family="${FONT}" font-size="${sw}" x="${(WL-sw*2)/2+pl}"    y="${H-pb-sw*0.5-sw*0}">編</text>
+
+	
+
+	`.replace(/xmlns.*?=".*?"/g,"").replace(/<\?xml.*?>/g,"").replace(/<!DOCTYPE.*?>/g,"")
+	
 }
 
-execSync(`"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ../assets/wenyan-book.pdf ../tmp/*.pdf`, { encoding: 'utf-8' });
+
+
+// var C = 11
+// var R = 27
+// var [W,H]=[500,900]
+// var [pl,pr,pt,pb] = [25,20,125,45]
+// var {T,F,A} = matrix(bl,sem,C,R)
+// var P = typeset(T,F,C,R,W,H,pl,pr,pt,pb)
+
+// console.log("making pages...")
+// for (var i = 0; i < P.length; i++){
+// 	var f = `${(i+1).toString().padStart(3,'0')}`
+// 	fs.writeFileSync(`../tmp/${f}.svg`,P[i]);
+	
+// 	if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf ${f}.svg > ${f}.pdf`, { encoding: 'utf-8' });
+	
+// 	console.log(i+1,'/',P.length);
+// }
+// console.log("making covers...")
+// fs.copyFileSync("../assets/cover-front.svg","../tmp/000.svg")
+// fs.copyFileSync("../assets/cover-back.svg","../tmp/999.svg")
+
+// if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 000.svg > 000.pdf`, { encoding: 'utf-8' });
+// if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 999.svg > 999.pdf`, { encoding: 'utf-8' });
+
+// console.log("making pdf...")
+// if (CVT_PDF) execSync(`"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ../assets/wenyan-book.pdf ../tmp/*.pdf`, { encoding: 'utf-8' });
+
+
+
+console.log("making html...")
+var svgs = fs.readdirSync("../tmp").filter(x=>x.endsWith(".svg"))
+svgs.sort();
+var html = `<html><head><meta charset="UTF-8"></head>
+	<style>
+		@font-face {
+			font-family: QIJIC;
+			src: url('../assets/font.woff2') format('woff2'), url('.../assets/font.ttf') format('truetype');
+		}
+	</style>
+`+svgs.map(x=>fs.readFileSync("../tmp/"+x)).join(`<p style="page-break-before: always"></p>`)+`</html>`
+fs.writeFileSync("../tmp/index.html",html);
+
+
+
 console.log('done');

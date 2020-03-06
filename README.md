@@ -12,11 +12,16 @@
 > 
 > ── 《文言陰符內篇•明義第一》
 
-## [網頁版 Read Online](https://wy-book.netlify.com/)
+## [Read Online](https://wy-book.netlify.com/)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7c6b5275-99ea-4dfa-af77-23ac38b80ac6/deploy-status)](https://app.netlify.com/sites/wy-book/deploys)
 
 [![](assets/screenshots/screenshot001.png)](https://wy-book.netlify.com/)
+
+## [Download PDF](../assets/wenyan-book.pdf)
+
+[![](assets/screenshots/screenshot002.svg)](../assets/wenyan-book.pdf)
+
 
 ## 目錄 Table of Contents
 
