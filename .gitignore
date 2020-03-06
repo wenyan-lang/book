@@ -1,3 +1,4 @@
 .DS_Store
 scripts/node_modules/
 site/
+tmp/
