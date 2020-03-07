@@ -18,11 +18,10 @@
 
 [![](assets/screenshots/screenshot001.png)](https://wy-book.netlify.com/)
 
-## [Download PDF](../assets/wenyan-book.pdf)
 
-[![](assets/screenshots/screenshot002.svg)](../assets/wenyan-book.pdf)
+## Download PDF
 
-## [Download Relic PDF](https://github.com/LingDong-/wenyan-book/releases)
+###【[Relic Edition](https://github.com/LingDong-/wenyan-book/releases)】【[Remastered Edition](../assets/wenyan-book.pdf)】
 
 [![](assets/screenshots/screenshot003.png)](https://github.com/LingDong-/wenyan-book/releases)
 
