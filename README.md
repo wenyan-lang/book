@@ -6,7 +6,7 @@
 
 文言文編程入門: The official [wenyan-lang](https://wy-lang.org) handbook, written in Classical Chinese.
 
-<img src="assets/cover.png" height="700">
+<img src="assets/cover-alt.png" height="700">
 
 > 編程者何？所以役機器也。機器者何？所以代人力也。然機器之力也廣，其算也速，唯智不逮也。故有智者慎謀遠慮，下筆千言，如軍令然，如藥方然，謂之程式。機器既明之，乃能為人所使。或演星文，或析事理，其用豈止萬端。問曰：機器者，物也，銅鐵也，何能為而能識人之語，而為人之使耶？曰：此所以有編程語言也。人之所常言，辭或斐然，典或奧雅，機器故不能解。然機器所解者，則寥寥然二三言也。曰與、曰或、曰非。此皆至元之辭，人又未易用之。故取其中庸之道，倣人之所言，取其精煉明要者，點竄典字，嚴定其義。上足觀之而為人之用，下足譯之而為機器所解。是謂編程語言也。古有算經，易有繫辭，其用雖不同，語如其類也。
 > 
@@ -24,6 +24,8 @@
 ### 【[Relic Edition](https://github.com/LingDong-/wenyan-book/releases)】【[Remastered Edition](../assets/wenyan-book.pdf)】
 
 [![](assets/screenshots/screenshot003.png)](https://github.com/LingDong-/wenyan-book/releases)
+
+[![](assets/screenshots/screenshot004.png)](https://github.com/LingDong-/wenyan-book/releases)
 
 
 ## 目錄 Table of Contents
