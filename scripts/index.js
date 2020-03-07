@@ -825,7 +825,7 @@ a:active{
 <div id="render"></div>
 <div id="cover">
 	<div style="position:absolute;left:72px;width:calc(100% - 144px);top:0px;height:100%;border-left:2px solid ${BLACK};border-right:2px solid ${BLACK}">
-		${fs.readFileSync("../assets/title.svg").toString().replace("<svg ",`<svg style="height:85%;width:100%;position:absolute;top:5%;"`)}
+		${fs.readFileSync("../assets/title-alt.svg").toString().replace("<svg ",`<svg style="height:85%;width:100%;position:absolute;top:5%;"`)}
 	</div>
 	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*0}px">文</div>
 	<div style="position:absolute; font-size:${tw}px; right:20px; top:${10+tw*1}px">言</div>

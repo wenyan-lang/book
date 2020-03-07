@@ -145,7 +145,7 @@ def makeold(pth):
 
     cv2.imwrite((".".join(pth.split(".")[:-1]))+".png",(im*255).astype(np.uint8))
 
-for x in glob("../tmp/*.svg"):
+for x in glob("../tmp/001.svg"):
     print(x)
     try:
         makeold(x)

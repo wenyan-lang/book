@@ -362,7 +362,7 @@ function titlepage(W,H,pl,pr,pt,pb){
 	var tr = [0,0]
 	var sr = [0,0]
 
-	var ti = fs.readFileSync("../assets/title.svg").toString().replace(/width="(.*?)" height="(.*?)"/,function(_,w,h){
+	var ti = fs.readFileSync("../assets/title-alt.svg").toString().replace(/width="(.*?)" height="(.*?)"/,function(_,w,h){
 		var hh = (H-pt-pb)*0.9;
 		var ww = hh*w/h;
 		tr = [pl+WL+(WM-ww)/2,pt+(H-pt-pb-hh)/2]
@@ -423,7 +423,7 @@ for (var i = 0; i < P.length; i++){
 	console.log(i+1,'/',P.length);
 }
 console.log("making covers...")
-fs.copyFileSync("../assets/cover-front.svg","../tmp/000.svg")
+fs.copyFileSync("../assets/cover-front-alt.svg","../tmp/000.svg")
 fs.copyFileSync("../assets/cover-back.svg","../tmp/999.svg")
 
 if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 000.svg > 000.pdf`, { encoding: 'utf-8' });
