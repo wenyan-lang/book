@@ -22,6 +22,10 @@
 
 [![](assets/screenshots/screenshot002.svg)](../assets/wenyan-book.pdf)
 
+## [Download Relic PDF](https://github.com/LingDong-/wenyan-book/releases)
+
+[![](assets/screenshots/screenshot003.png)](https://github.com/LingDong-/wenyan-book/releases)
+
 
 ## 目錄 Table of Contents
 

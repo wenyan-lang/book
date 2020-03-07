@@ -406,31 +406,31 @@ function titlepage(W,H,pl,pr,pt,pb){
 
 
 
-// var C = 11
-// var R = 27
-// var [W,H]=[500,900]
-// var [pl,pr,pt,pb] = [25,20,125,45]
-// var {T,F,A} = matrix(bl,sem,C,R)
-// var P = typeset(T,F,C,R,W,H,pl,pr,pt,pb)
+var C = 11
+var R = 27
+var [W,H]=[500,900]
+var [pl,pr,pt,pb] = [25,20,125,45]
+var {T,F,A} = matrix(bl,sem,C,R)
+var P = typeset(T,F,C,R,W,H,pl,pr,pt,pb)
 
-// console.log("making pages...")
-// for (var i = 0; i < P.length; i++){
-// 	var f = `${(i+1).toString().padStart(3,'0')}`
-// 	fs.writeFileSync(`../tmp/${f}.svg`,P[i]);
+console.log("making pages...")
+for (var i = 0; i < P.length; i++){
+	var f = `${(i+1).toString().padStart(3,'0')}`
+	fs.writeFileSync(`../tmp/${f}.svg`,P[i]);
 	
-// 	if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf ${f}.svg > ${f}.pdf`, { encoding: 'utf-8' });
+	if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf ${f}.svg > ${f}.pdf`, { encoding: 'utf-8' });
 	
-// 	console.log(i+1,'/',P.length);
-// }
-// console.log("making covers...")
-// fs.copyFileSync("../assets/cover-front.svg","../tmp/000.svg")
-// fs.copyFileSync("../assets/cover-back.svg","../tmp/999.svg")
+	console.log(i+1,'/',P.length);
+}
+console.log("making covers...")
+fs.copyFileSync("../assets/cover-front.svg","../tmp/000.svg")
+fs.copyFileSync("../assets/cover-back.svg","../tmp/999.svg")
 
-// if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 000.svg > 000.pdf`, { encoding: 'utf-8' });
-// if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 999.svg > 999.pdf`, { encoding: 'utf-8' });
+if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 000.svg > 000.pdf`, { encoding: 'utf-8' });
+if (CVT_PDF)execSync(`cd ../tmp; cairosvg -f pdf 999.svg > 999.pdf`, { encoding: 'utf-8' });
 
-// console.log("making pdf...")
-// if (CVT_PDF) execSync(`"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ../assets/wenyan-book.pdf ../tmp/*.pdf`, { encoding: 'utf-8' });
+console.log("making pdf...")
+if (CVT_PDF) execSync(`"/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o ../assets/wenyan-book.pdf ../tmp/*.pdf`, { encoding: 'utf-8' });
 
 
 
