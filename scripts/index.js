@@ -565,7 +565,7 @@ var html = `
 @font-face {
 	font-family: QIJI;
 	font-display: swap;
-	src: url('font.woff2') format('woff2'), url('font.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/wenyan-lang/book/assets/font.woff2') format('woff2'), url('font.ttf') format('truetype');
 }
 :root{
 	background:white;
@@ -816,7 +816,7 @@ a:active{
 <div id="title">
 <h1>wenyan-book / 文言陰符</h1>
 <h2>An Introduction to Programming in Wenyan Language / 文言文編程入門</h2>
-<a href="https://github.com/LingDong-/wenyan-book">github</a> | <a href="https://wy-lang.org/">wenyan-lang</a> | <a href="https://github.com/wenyan-lang/wenyan/wiki">wiki</a> | <a href="https://lingdong.works/">lingdong</a>
+<a href="https://github.com/wenyan-lang/book/releases">pdf</a> | <a href="https://github.com/wenyan-lang/book">github</a> | <a href="https://wy-lang.org/">wenyan-lang</a> | <a href="https://github.com/wenyan-lang/wenyan/wiki">wiki</a> | <a href="https://lingdong.works/">lingdong</a>
 <br>
 <span class="text-btn" onclick="document.documentElement.style.filter=document.documentElement.style.filter.length?'':'invert(95%)';this.innerHTML={'[light]':'[dark]','[dark]':'[light]'}[this.innerHTML]">[dark]</span>
 <span class="text-btn" onclick="document.getElementById('help').style.display={'block':'none','none':'block'}[document.getElementById('help').style.display];">[help]</span>
@@ -876,7 +876,7 @@ To jump to a chapter, click on the tab bearing its title.
 </div><div>
 Slow with vertical text?
 </div><div style="color:dimgrey;">
-Read the <a href="https://github.com/LingDong-/wenyan-book">markdowns</a> directly on Github.
+Read the <a href="https://github.com/wenyan-lang/book">markdowns</a> directly on Github, or download the <a href="https://github.com/wenyan-lang/book/releases">PDF</a>.
 </div><div>
 Don't know Classical Chinese?
 </div><div style="color:dimgrey;">

@@ -12,20 +12,20 @@
 > 
 > ── 《文言陰符內篇•明義第一》
 
-## [Read Online](https://wy-book.netlify.com/)
+## [Read Online](https:/book.wy-lang.org)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7c6b5275-99ea-4dfa-af77-23ac38b80ac6/deploy-status)](https://app.netlify.com/sites/wy-book/deploys)
 
-[![](assets/screenshots/screenshot001.png)](https://wy-book.netlify.com/)
+[![](assets/screenshots/screenshot001.png)](https:/book.wy-lang.org/)
 
 
 ## Download PDF
 
-### 【[Relic Edition](https://github.com/LingDong-/wenyan-book/releases)】【[Remastered Edition](../assets/wenyan-book.pdf)】
+### 【[Relic Edition](https://github.com/wenyan-lang/book/releases)】【[Remastered Edition](../assets/wenyan-book.pdf)】
 
-[![](assets/screenshots/screenshot003.png)](https://github.com/LingDong-/wenyan-book/releases)
+[![](assets/screenshots/screenshot003.png)](https://github.com/wenyan-lang/book/releases)
 
-[![](assets/screenshots/screenshot004.png)](https://github.com/LingDong-/wenyan-book/releases)
+[![](assets/screenshots/screenshot004.png)](https://github.com/wenyan-lang/book/releases)
 
 
 ## 目錄 Table of Contents
