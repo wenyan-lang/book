@@ -77,6 +77,7 @@ for (var i = 0; i < bl.length; i++){
 	if (i % 2 == 0){
 		bl[i] = bl[i].replace(/`(.+?)`/g,"「$1」")
 		bl[i] = bl[i].replace(/\n+/g,"$").replace(/\n/g,'').replace(/\$/g,'\n')
+		bl[i] = bl[i].replace(/」 「/g,"」「")
 
 	}else{
 		BLOCKS[i] = BLOCKS[i].replace("為是千遍","為是十遍");
