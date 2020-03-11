@@ -21,7 +21,7 @@
 
 ## Download PDF
 
-### 【[Relic Edition](https://github.com/wenyan-lang/book/releases)】【[Remastered Edition](../assets/wenyan-book.pdf)】
+### 【[Relic Edition](https://github.com/wenyan-lang/book/releases)】【[Remastered Edition](assets/wenyan-book.pdf)】
 
 [![](assets/screenshots/screenshot003.png)](https://github.com/wenyan-lang/book/releases)
 
