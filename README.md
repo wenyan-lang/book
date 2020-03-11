@@ -12,7 +12,7 @@
 > 
 > ── 《文言陰符內篇•明義第一》
 
-## [Read Online](https:/book.wy-lang.org)
+## [Read Online](https://book.wy-lang.org)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7c6b5275-99ea-4dfa-af77-23ac38b80ac6/deploy-status)](https://app.netlify.com/sites/wy-book/deploys)
 
