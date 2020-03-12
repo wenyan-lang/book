@@ -23,6 +23,8 @@
 
 ### 【[Relic Edition](https://github.com/wenyan-lang/book/releases)】【[Remastered Edition](assets/wenyan-book.pdf)】
 
+([alternative link](https://cdn.jsdelivr.net/gh/wenyan-lang/book/assets/wenyan-book.pdf))
+
 [![](assets/screenshots/screenshot003.png)](https://github.com/wenyan-lang/book/releases)
 
 [![](assets/screenshots/screenshot004.png)](https://github.com/wenyan-lang/book/releases)
