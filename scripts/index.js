@@ -95,7 +95,7 @@ for (var i = 0; i < bl.length; i++){
 
 var CODEMETA = fs.readFileSync("../assets/code-fragment-meta.txt").toString().split("\n")
 	.filter(x=>!x.startsWith("#")&&x.length).map(x=>x.trim())
-	.map(x=>x.split(" ").map(y=>isNaN(parseInt(y))?y:parseInt(y)));
+	.map(x=>x.split(" ").map(y=>y.includes("[")?y:(isNaN(parseInt(y))?y:parseInt(y))));
 
 function matrix(bl,sem,H){
 
@@ -207,7 +207,20 @@ function typeset(T,F,l,r,w,h){
 					var c = '';
 					for (var j = 0; j < m.length; j++){
 						if (typeof m[j] == 'string'){
-							c += m[j];
+							if (m[j].includes('[')){
+								var i0 = parseInt(m[j].split('[')[0]);
+								var i1 = parseInt(m[j].split('[')[1].split(':')[0]);
+								var i2 = parseInt(m[j].split(':')[1].split(']')[0]);
+								if (isNaN(i2)){
+									i2 = undefined;
+								}
+								if (isNaN(i0)){
+									i1 = 0;
+								}
+								c += BLOCKS[_i+i0*2].slice(1).split('\\n').slice(i1,i2).join('\\n');
+							}else{
+								c += m[j];
+							}
 						}else{
 							c += BLOCKS[_i+m[j]*2].slice(1);
 						}
