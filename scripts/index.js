@@ -579,7 +579,7 @@ var html = `
 @font-face {
 	font-family: QIJI;
 	font-display: swap;
-	src: url('https://cdn.jsdelivr.net/gh/wenyan-lang/book/assets/font.woff2') format('woff2'), url('font.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/wenyan-lang/book@3899aad7a917d0f000716ca97fe29221fe4b56d6/assets/font.woff2') format('woff2'), url('https://cdn.jsdelivr.net/gh/wenyan-lang/book@3899aad7a917d0f000716ca97fe29221fe4b56d6/assets/font.ttf') format('truetype');
 }
 :root{
 	background:white;
