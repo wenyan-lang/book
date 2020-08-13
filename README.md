@@ -46,6 +46,11 @@
 - [圖畫第十二](12%20圖畫第十二.md)
 - [宏略第十三](13%20宏略第十三.md)
 
+
+## Translations
+
+- [Japanese Kanbun version by @747](https://gitlab.com/yheuhtozr/book-ja-kanbun)
+
 ## Contributing
 
 
