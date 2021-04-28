@@ -50,6 +50,7 @@
 ## Translations
 
 - [Japanese Kanbun version by @747](https://gitlab.com/yheuhtozr/book-ja-kanbun)
+- [Simplified Chinese version by @zuorong-zhang](https://github.com/zuorong-zhang/wybk-slcn)
 
 ## Contributing
 
